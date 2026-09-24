@@ -1,7 +1,21 @@
-@import "tailwindcss";
+/*
+  Brew & Co design tokens, in Tailwind v4 format.
+  Canonical source. src/app/globals.css mirrors this file.
 
-/* Mirrors docs/design/tokens.css, which is the canonical source. */
+  @theme values become CSS variables and Tailwind utilities, for example
+  --color-oat -> bg-oat / text-oat, --radius-card -> rounded-card,
+  --shadow-float -> shadow-float, --text-h1 -> text-h1.
+
+  Fonts are loaded by next/font/google in src/app/layout.tsx under their own
+  variable names, then mapped to the theme in @theme inline:
+
+    import { Bricolage_Grotesque, Work_Sans } from "next/font/google";
+    const display = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin"] });
+    const body = Work_Sans({ variable: "--font-work-sans", subsets: ["latin"] });
+*/
+
 @theme {
+  /* Color */
   --color-oat: #f6eedd;
   --color-cloud: #fffdf8;
   --color-espresso: #251811;
@@ -12,6 +26,7 @@
   --color-matcha: #55684a;
   --color-cream-line: #e4d8be;
 
+  /* Type scale (font-size utilities: text-display, text-h1, ...) */
   --text-display: 4rem;
   --text-display--line-height: 0.95;
   --text-display-mobile: 2.75rem;
@@ -31,15 +46,18 @@
   --text-caption: 0.8125rem;
   --text-caption--line-height: 1.3;
 
+  /* Radius (weighted by role, see style-guide.md §5) */
   --radius-pill: 9999px;
   --radius-card: 24px;
   --radius-thumb: 12px;
   --radius-date: 16px;
   --radius-input: 12px;
 
+  /* Shadow: tinted with espresso, never pure black */
   --shadow-float: 0 12px 24px -8px rgb(37 24 17 / 0.18);
   --shadow-press: inset 0 2px 4px rgb(37 24 17 / 0.25);
 
+  /* Motion */
   --ease-brew: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -49,6 +67,7 @@
 }
 
 :root {
+  /* Hero photo overlay: dark on the text side, clear on the far side */
   --overlay-hero: linear-gradient(
     90deg,
     rgb(37 24 17 / 0.82) 0%,
@@ -59,11 +78,8 @@
   --duration-rise: 180ms;
 }
 
-/* Light-only by design decision (see docs/design/tokens.css). */
-
-html {
-  scroll-behavior: smooth;
-}
+/* Light-only by design decision. A dark scheme needs its own art direction
+   pass. If one is commissioned, gate it behind :root[data-theme="dark"]. */
 
 body {
   background: var(--color-oat);
@@ -75,80 +91,4 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-}
-
-:focus-visible {
-  outline: 2px solid var(--color-amber);
-  outline-offset: 2px;
-}
-
-.bg-amber:focus-visible {
-  outline-color: var(--color-espresso);
-}
-
-/* The one orchestrated load moment: hero headline, then copy and buttons. */
-@keyframes rise-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-}
-
-.hero-rise {
-  animation: rise-in var(--duration-rise) var(--ease-brew) both;
-}
-
-.hero-follow {
-  animation: fade-in 120ms var(--ease-brew) 120ms both;
-}
-
-dialog[open] {
-  animation: dialog-in 150ms var(--ease-brew);
-}
-
-dialog[open]::backdrop {
-  background: rgb(37 24 17 / 0.55);
-  animation: fade-in 150ms var(--ease-brew);
-}
-
-@keyframes dialog-in {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  .hero-rise,
-  .hero-follow {
-    animation: fade-in 1ms both;
-  }
-
-  dialog[open] {
-    animation: fade-in 150ms;
-  }
-
-  *,
-  *::before,
-  *::after {
-    transition-duration: 1ms !important;
-  }
-}
-
-.scrollbar-none {
-  scrollbar-width: none;
-}
-
-.scrollbar-none::-webkit-scrollbar {
-  display: none;
 }

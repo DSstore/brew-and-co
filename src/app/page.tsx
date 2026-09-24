@@ -1,69 +1,119 @@
 import Image from "next/image";
+import Link from "next/link";
+import { buttonClass } from "@/components/button";
+import { EventList } from "@/components/event-list";
+import { MenuItemCard } from "@/components/menu-item";
+import { ReserveButton } from "@/components/reservation/reserve-button";
+import { getUpcomingEvents } from "@/lib/events";
+import { getPopularItems } from "@/lib/menu";
+import { PHOTOS, SHOP } from "@/lib/site";
 
-export default function Home() {
+// Rebuild hourly so "upcoming" events roll forward past each Friday and Saturday.
+export const revalidate = 3600;
+
+export default function HomePage() {
+  const popular = getPopularItems();
+  const events = getUpcomingEvents();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <>
+      <section className="relative isolate flex min-h-[560px] items-center overflow-hidden text-oat h-[min(85vh,760px)]">
         <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+          src={PHOTOS.hero.src}
+          alt={PHOTOS.hero.alt}
+          fill
+          preload
+          sizes="100vw"
+          className="-z-20 object-cover"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[image:var(--overlay-hero)]" />
+        <div className="mx-auto w-full max-w-[1200px] px-6 pt-16 lg:px-16">
+          <h1 className="hero-rise max-w-[12ch] text-display-mobile font-semibold md:text-display">
+            Coffee, pastries and a seat by the window.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <div className="hero-follow">
+            <p className="mt-6 max-w-[40ch] text-body-lg text-oat/90">
+              Small-batch specialty coffee, pastries baked every morning and light lunches until close.
+              On Franklin Avenue in {SHOP.neighbourhood} since {SHOP.founded}.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <ReserveButton />
+              <Link href="/menu" className={buttonClass("ghost-dark")}>
+                View menu
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="popular-heading" className="mx-auto max-w-[1200px] px-6 py-20 lg:px-16 lg:py-24">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 id="popular-heading" className="text-h1 font-semibold">
+            Most popular
+          </h2>
+          <Link
+            href="/menu"
+            className="inline-flex min-h-11 items-center text-label font-medium underline underline-offset-4 decoration-amber decoration-2"
+          >
+            See the full menu
+          </Link>
+        </div>
+        <div className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {popular.map((item) => (
+            <MenuItemCard key={item.name} item={item} />
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="events-heading" className="bg-cloud/60">
+        <div className="mx-auto grid max-w-[1200px] gap-10 px-6 py-20 lg:grid-cols-12 lg:px-16 lg:py-24">
+          <div className="lg:col-span-5">
+            <h2 id="events-heading" className="text-h1 font-semibold">
+              What&apos;s on
+            </h2>
+            <p className="mt-4 max-w-[40ch] text-body-lg text-espresso-soft">
+              Every Friday night the room turns into a stage, and every Saturday morning our roaster
+              pours three coffees side by side. Both are free. Just come in.
+            </p>
+            <div className="relative mt-8 hidden aspect-[4/3] overflow-hidden rounded-card lg:block">
+              <Image
+                src={PHOTOS.openMic.src}
+                alt={PHOTOS.openMic.alt}
+                fill
+                sizes="(min-width: 1024px) 420px, 0px"
+                className="object-cover"
+              />
+            </div>
+          </div>
+          <div className="lg:col-span-7">
+            <EventList events={events} />
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="story-heading" className="mx-auto grid max-w-[1200px] items-center gap-10 px-6 py-20 md:grid-cols-2 lg:gap-16 lg:px-16 lg:py-24">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-card">
+          <Image
+            src={PHOTOS.counter.src}
+            alt={PHOTOS.counter.alt}
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover"
+          />
+        </div>
+        <div>
+          <h2 id="story-heading" className="text-h1 font-semibold">
+            A hardware store, then a coffee shop
+          </h2>
+          <p className="mt-4 max-w-[45ch] text-body-lg text-espresso-soft">
+            Maya and Theo met at a cupping in {SHOP.neighbourhood} and spent two years looking for the
+            right room. They found it behind a hardware store&apos;s old shutters, and kept the shelves.
           </p>
+          <Link href="/about" className={`${buttonClass("ghost")} mt-8`}>
+            Read our story
+          </Link>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </section>
+    </>
   );
 }
