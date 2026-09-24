@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [new URL("https://images.pexels.com/photos/**")],
+    // Photos are self-hosted WebP files in public/images (see the optimize-image skill).
+    localPatterns: [{ pathname: "/images/**", search: "" }],
   },
 };
 

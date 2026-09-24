@@ -38,7 +38,7 @@ export type Photo = {
 
 function pexels(id: number, slug: string, alt: string, subject: string): Photo {
   return {
-    src: `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg`,
+    src: `/images/pexels-${id}.webp`,
     alt,
     page: `https://www.pexels.com/photo/${slug}-${id}/`,
     subject,
