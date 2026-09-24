@@ -14,18 +14,17 @@ export type DayHours = { open: number; close: number };
 
 export const HOURS: readonly DayHours[] = [
   { open: 8 * 60, close: 16 * 60 },
-  { open: 7 * 60, close: 18 * 60 },
-  { open: 7 * 60, close: 18 * 60 },
-  { open: 7 * 60, close: 18 * 60 },
-  { open: 7 * 60, close: 18 * 60 },
-  { open: 7 * 60, close: 22 * 60 },
-  { open: 8 * 60, close: 18 * 60 },
+  { open: 6 * 60, close: 20 * 60 },
+  { open: 6 * 60, close: 20 * 60 },
+  { open: 6 * 60, close: 20 * 60 },
+  { open: 6 * 60, close: 20 * 60 },
+  { open: 6 * 60, close: 20 * 60 },
+  { open: 7 * 60, close: 21 * 60 },
 ];
 
 export const HOURS_SUMMARY = [
-  { days: "Monday–Thursday", hours: "7:00am–6:00pm" },
-  { days: "Friday", hours: "7:00am–10:00pm" },
-  { days: "Saturday", hours: "8:00am–6:00pm" },
+  { days: "Monday–Friday", hours: "6:00am–8:00pm" },
+  { days: "Saturday", hours: "7:00am–9:00pm" },
   { days: "Sunday", hours: "8:00am–4:00pm" },
 ] as const;
 
